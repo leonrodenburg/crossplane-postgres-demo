@@ -1,0 +1,12 @@
+apiVersion: example.org/v1alpha1
+kind: PostgresInstance
+metadata:
+  name: my-instance
+  namespace: default
+spec:
+  parameters:
+    location: europe
+    storageInGB: 20
+    version: "13.2"
+  writeConnectionSecretToRef:
+    name: my-instance-creds

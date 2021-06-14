@@ -1,0 +1,48 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: compositepostgresinstances.example.org
+spec:
+  connectionSecretKeys:
+    - username
+    - password
+    - endpoint
+    - port
+  defaultCompositionRef:
+    name: postgres-aws
+  group: example.org
+  names:
+    kind: CompositePostgresInstance
+    plural: compositepostgresinstances
+  claimNames:
+    kind: PostgresInstance
+    plural: postgresinstances
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  properties:
+                    version:
+                      description: Postgres engine version
+                      type: string
+                      enum: [ "12.6", "13.2" ]
+                    storageInGB:
+                      type: integer
+                    location:
+                      description: Geographic location of this Postgres instance.
+                      type: string
+                  required:
+                    - location
+                    - storageInGB
+                    - version
+              required:
+                - parameters

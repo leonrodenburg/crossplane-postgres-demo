@@ -1,0 +1,39 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: postgres-aws
+  labels:
+    purpose: example
+    provider: aws
+spec:
+  compositeTypeRef:
+    apiVersion: example.org/v1alpha1
+    kind: CompositePostgresInstance
+  resources:
+    - name: rdsinstance
+      base:
+        apiVersion: database.aws.crossplane.io/v1beta1
+        kind: RDSInstance
+        spec:
+          forProvider:
+            dbInstanceClass: db.t3.micro
+            masterUsername: masteruser
+            engine: postgres
+            skipFinalSnapshotBeforeDeletion: true
+      patches:
+        - fromFieldPath: spec.parameters.version
+          toFieldPath: spec.forProvider.engineVersion
+        - fromFieldPath: spec.parameters.storageInGB
+          toFieldPath: spec.forProvider.allocatedStorage
+        - fromFieldPath: spec.parameters.location
+          toFieldPath: spec.forProvider.region
+          transforms:
+            - type: map
+              map:
+                europe: eu-west-1
+                us: us-east-1
+      connectionDetails:
+        - fromConnectionSecretKey: username
+        - fromConnectionSecretKey: password
+        - fromConnectionSecretKey: endpoint
+        - fromConnectionSecretKey: port
