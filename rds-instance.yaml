@@ -1,0 +1,16 @@
+apiVersion: database.aws.crossplane.io/v1beta1
+kind: RDSInstance
+metadata:
+  name: e2e-rds
+spec:
+  forProvider:
+    region: eu-west-1
+    dbInstanceClass: db.t3.micro
+    masterUsername: masteruser
+    allocatedStorage: 20
+    engine: postgres
+    engineVersion: "13.2"
+    skipFinalSnapshotBeforeDeletion: true
+  writeConnectionSecretToRef:
+    namespace: default
+    name: e2e-rds-creds

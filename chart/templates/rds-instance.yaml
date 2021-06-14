@@ -1,0 +1,18 @@
+apiVersion: database.aws.crossplane.io/v1beta1
+kind: RDSInstance
+metadata:
+  name: {{ include "chart.fullname" . }}
+spec:
+  forProvider:
+    region: {{ .Values.rdsInstance.region }}
+    dbInstanceClass: {{ .Values.rdsInstance.instanceClass }}
+    dbName: {{ .Values.rdsInstance.dbName }}
+    masterUsername: {{ .Values.rdsInstance.masterUsername }}
+    allocatedStorage: {{ .Values.rdsInstance.allocatedStorage }}
+    engine: {{ .Values.rdsInstance.engine }}
+    engineVersion: {{ .Values.rdsInstance.engineVersion | quote }}
+    skipFinalSnapshotBeforeDeletion: {{ .Values.rdsInstance.skipFinalSnapshotBeforeDeletion }}
+    publiclyAccessible: {{ .Values.rdsInstance.publiclyAccessible }}
+  writeConnectionSecretToRef:
+    namespace: {{ .Release.Namespace }}
+    name: {{ include "chart.fullname" . }}
